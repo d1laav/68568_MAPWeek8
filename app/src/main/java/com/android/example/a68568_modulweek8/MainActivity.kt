@@ -24,7 +24,6 @@ class MainActivity : ComponentActivity() {
             _68568_ModulWeek8Theme {
                 StudentRegistrationScreen()
                 }
-            }
         }
     }
 }
