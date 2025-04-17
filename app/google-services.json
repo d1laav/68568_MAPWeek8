@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "495097838196",
+    "project_id": "map-week8",
+    "storage_bucket": "map-week8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495097838196:android:61e9ba9bc8bfb0e7bcef21",
+        "android_client_info": {
+          "package_name": "com.android.example.a68568_modulweek8"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbDp1LZWz4iVcObBwqygfIxrhKcO2pdIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
