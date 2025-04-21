@@ -75,4 +75,68 @@ class StudentViewModel : ViewModel() {
                 Log.w("Firestore", "Error getting documents.", exception)
             }
     }
+
+    fun deleteStudent(studentId: String) {
+        db.collection("students")
+            .whereEqualTo("id", studentId)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val studentRef = document.reference
+
+                    // delete subcollection phones
+                    studentRef.collection("phones")
+                        .get()
+                        .addOnSuccessListener { phoneDocs ->
+                            for (phoneDoc in phoneDocs) {
+                                phoneDoc.reference.delete()
+                            }
+                            // delete student collection
+                            studentRef.delete()
+                                .addOnSuccessListener {
+                                    Log.d("Firestore", "Student deleted: $studentId")
+                                    fetchStudents()
+                                }
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error deleting student", e)
+            }
+    }
+
+    fun updateStudent(studentId: String, newName: String, newProgram: String, newPhones: List<String>) {
+        db.collection("students")
+            .whereEqualTo("id", studentId)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val ref = document.reference
+
+                    // Update name & program
+                    ref.update(mapOf("name" to newName, "program" to newProgram))
+                        .addOnSuccessListener {
+                            Log.d("Firestore", "Student updated: $studentId")
+
+                            // Hapus phones lama lalu masukkan yang baru
+                            ref.collection("phones")
+                                .get()
+                                .addOnSuccessListener { phoneDocs ->
+                                    for (doc in phoneDocs) {
+                                        doc.reference.delete()
+                                    }
+
+                                    // Tambahkan phones baru
+                                    newPhones.forEach { phone ->
+                                        val phoneMap = hashMapOf("number" to phone)
+                                        ref.collection("phones").add(phoneMap)
+                                    }
+
+                                    fetchStudents()
+                                }
+                        }
+                }
+            }
+    }
+
 }
