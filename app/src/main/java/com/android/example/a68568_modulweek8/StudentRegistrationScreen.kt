@@ -60,7 +60,7 @@ fun StudentRegistrationScreen(viewModel: StudentViewModel = viewModel()) {
             label = { Text("Program") }
         )
 
-        // Bagian Row untuk menambah nomor telepon
+        // row buat nambahin nomor telepon
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextField(
                 value = currentPhone,
