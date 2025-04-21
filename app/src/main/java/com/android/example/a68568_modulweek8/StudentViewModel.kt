@@ -1,7 +1,6 @@
 package com.android.example.a68568_modulweek8
 
 import android.util.Log
-import android.util.Log.e
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -27,9 +26,23 @@ class StudentViewModel : ViewModel() {
 
         db.collection("students")
             .add(studentMap)
-            .addOnSuccessListener {
-                Log.d("Firestore", "DocumentSnapshot added with ID: ${it.id}")
-                        fetchStudents()
+            .addOnSuccessListener { docRef ->
+                Log.d("Firestore", "DocumentSnapshot added with ID: ${docRef.id}")
+
+                // new subcollection for phones
+                student.phones.forEach { phone ->
+                    val phoneMap = hashMapOf("number" to phone)
+                    docRef.collection("phones")
+                        .add(phoneMap)
+                        .addOnSuccessListener {
+                            Log.d("Firestore", "Phone added: $phone")
+                        }
+                        .addOnFailureListener { e: Exception ->
+                            Log.e("Firestore", "Failed to add phone: $phone", e)
+                        }
+                }
+
+                fetchStudents()
             }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Error adding document", e)
@@ -45,10 +58,18 @@ class StudentViewModel : ViewModel() {
                     val id = document.getString("id") ?: ""
                     val name = document.getString("name") ?: ""
                     val program = document.getString("program") ?: ""
-                    val phones = document.get("phones") as? List<String> ?: emptyList()
-                    list.add(Student(id, name, program))
+                    val docRef = document.reference
+
+                    // subcollection phones
+                    docRef.collection("phones")
+                        .get()
+                        .addOnSuccessListener { phoneDocs ->
+                            val phoneList = phoneDocs.mapNotNull { it.getString("number") }
+                            list.add(Student(id, name, program, phoneList))
+                            // sort by id (awalnya name)
+                            students = list.sortedBy { it.id }
+                        }
                 }
-                students = list
             }
             .addOnFailureListener { exception ->
                 Log.w("Firestore", "Error getting documents.", exception)

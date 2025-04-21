@@ -26,7 +26,7 @@ fun StudentRegistrationScreen(viewModel: StudentViewModel = viewModel()) {
     var studentId by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
     var program by remember { mutableStateOf("") }
-    var currentPhone by remember { mutableStateOf("") } // <--- Tambahkan ini
+    var currentPhone by remember { mutableStateOf("") }
     var phoneList by remember { mutableStateOf(listOf<String>()) }
 
     Column(
@@ -57,7 +57,6 @@ fun StudentRegistrationScreen(viewModel: StudentViewModel = viewModel()) {
                 value = currentPhone,
                 onValueChange = { currentPhone = it },
                 label = { Text("Phone Number") },
-                modifier = Modifier.weight(1f)
             )
             Button(
                 onClick = {
